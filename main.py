@@ -34,6 +34,7 @@ class Game:
             self.tilemap.draw(self.win)
 
             self.player.update(self.tilemap)
+            self.player.update_sprite()
             self.player.draw(self.win)
 
             for event in pygame.event.get():
