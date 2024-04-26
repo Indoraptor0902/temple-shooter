@@ -30,12 +30,7 @@ def load_all_spritesheets(path):
     anim_states = [folder for folder in os.listdir(new_path) if os.path.isdir(os.path.join(new_path, folder))]
 
     for anim_state in anim_states:
-        images = []
-
-        for file in os.listdir(os.path.join(new_path, anim_state)):
-            img_path = os.path.join(path, anim_state, file).replace('\\', '/')
-            img = load_image(img_path)
-            images.append(img)
+        images = load_images(os.path.join(path, anim_state).replace('\\', '/'))
         
         all_sprites[anim_state + '_right'] = images
         all_sprites[anim_state + '_left'] = flip_images(images)

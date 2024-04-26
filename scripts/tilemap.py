@@ -19,8 +19,8 @@ class Tilemap:
         }
 
         for i in range(10):
-            self.tilemap[str(3 + i) + ';8'] = {'type': 'grass', 'variant': 1, 'pos': (3 + i, 8)}
-            self.tilemap['9;' + str(2 + i)] = {'type': 'stone', 'variant': 1, 'pos': (9, 2 + i)}
+            self.tilemap[str(3 + i) + ';8'] = {'type': 'grass', 'variant': 1, 'pos': [3 + i, 8]}
+            self.tilemap['9;' + str(2 + i)] = {'type': 'stone', 'variant': 1, 'pos': [9, 2 + i]}
     
     def tiles_around(self, pos):
         tiles = []

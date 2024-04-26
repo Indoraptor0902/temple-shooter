@@ -1,17 +1,18 @@
 import pygame
 from scripts.utils import load_image, load_all_spritesheets
 
-class Player:
-    def __init__(self, game, pos):
+class Entity:
+    def __init__(self, game, entity_type, pos):
         self.game = game
         
         self.pos = list(pos)
 
-        self.sprites = load_all_spritesheets('entities/player')
+        self.entity_type = entity_type
+
+        self.sprites = load_all_spritesheets('entities/' + self.entity_type)
         self.direction = 'right'
         self.action = 'idle'
         self.state = self.action + '_' + self.direction
-        self.image = self.sprites[self.state][0]
         self.image = load_image('entities/player.png')
         self.size = [self.image.get_width(), self.image.get_height()]
 
@@ -21,8 +22,8 @@ class Player:
 
         self.collisions = {'up': False, 'down': False, 'left': False, 'right': False}
 
-        self.anim_offset = (-3, -3)
-        self.animation_duration = 5
+        self.anim_offset = (-10, -10)
+        self.animation_duration = 4
         self.frame = 0
         self.air_time = 0
     
@@ -33,20 +34,6 @@ class Player:
         if action != self.action:
             self.action = action
             self.frame = 0
-    
-    def handle_movement(self, event):
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                self.movement[0] += -1
-            if event.key == pygame.K_RIGHT:
-                self.movement[0] += 1
-            if event.key == pygame.K_UP:
-                self.velocity[1] = -8
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_LEFT:
-                self.movement[0] -= -1
-            if event.key == pygame.K_RIGHT:
-                self.movement[0] -= 1
     
     def update(self, tilemap):
         self.collisions = {'up': False, 'down': False, 'left': False, 'right': False}
@@ -82,19 +69,7 @@ class Player:
             self.velocity[1] = 0
     
     def update_sprite(self):
-        self.air_time += 1
-
         self.frame = (self.frame + 1) % (self.animation_duration * len(self.sprites[self.state]))
-        
-        if self.collisions['down']:
-            self.air_time = 0
-        
-        if self.air_time > 4:
-            self.set_action('jump')
-        elif self.movement[0] != 0:
-            self.set_action('run')
-        else:
-            self.set_action('idle')
         
         if self.movement[0] > 0:
             self.direction = 'right'
@@ -107,3 +82,38 @@ class Player:
     
     def draw(self, win):
         win.blit(self.image, (self.pos[0] + self.anim_offset[0], self.pos[1] + self.anim_offset[1]))
+
+class Player(Entity):
+    def __init__(self, game, pos):
+        super().__init__(game, 'player', pos)
+
+        self.air_time = 0
+    
+    def handle_movement(self, event):
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                self.movement[0] += -1
+            if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                self.movement[0] += 1
+            if event.key == pygame.K_UP or event.key == pygame.K_w:
+                self.velocity[1] = -8
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT or event.key == pygame.K_a:
+                self.movement[0] -= -1
+            if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
+                self.movement[0] -= 1
+    
+    def update_sprite(self):
+        super().update_sprite()
+
+        self.air_time += 1
+    
+        if self.collisions['down']:
+            self.air_time = 0
+        
+        if self.air_time > 4:
+            self.set_action('jump')
+        elif self.movement[0] != 0:
+            self.set_action('run')
+        else:
+            self.set_action('idle')
