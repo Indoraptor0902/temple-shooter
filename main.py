@@ -1,7 +1,7 @@
 import pygame
 from scripts.settings import *
 from scripts.utils import *
-from scripts.player import Player
+from scripts.entities import Player
 from scripts.tilemap import Tilemap
 
 
@@ -33,7 +33,7 @@ class Game:
 
             self.tilemap.draw(self.win)
 
-            self.player.update(self.tilemap)
+            #self.player.update(self.tilemap)
             self.player.update_sprite()
             self.player.draw(self.win)
 
@@ -44,6 +44,7 @@ class Game:
                     if event.key == pygame.K_q:
                         self.running = False
                 self.player.handle_movement(event)
+                self.player.handle_controls(event)
             
             pygame.display.flip()
         

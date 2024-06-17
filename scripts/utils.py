@@ -7,8 +7,11 @@ pygame.init()
 
 BASE_IMG_PATH = 'data/images/'
 
+def flip_img(sprite):
+    return pygame.transform.flip(sprite, True, False)
+
 def flip_images(sprites):
-    return [pygame.transform.flip(sprite, True, False) for sprite in sprites]
+    return [flip_img(sprite) for sprite in sprites]
 
 def load_image(path):
     unscaled_img = pygame.image.load(BASE_IMG_PATH + path)

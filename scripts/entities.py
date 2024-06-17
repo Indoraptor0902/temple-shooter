@@ -1,5 +1,6 @@
 import pygame
-from scripts.utils import load_image, load_all_spritesheets
+from scripts.utils import *
+from scripts.projectile import *
 
 class Entity:
     def __init__(self, game, entity_type, pos):
@@ -26,6 +27,9 @@ class Entity:
         self.animation_duration = 4
         self.frame = 0
         self.air_time = 0
+
+        self.project_wpn_img = load_image('gun.png')
+        self.projectiles = []
     
     def rect(self):
         return pygame.Rect(self.pos[0], self.pos[1], self.size[0], self.size[1])
@@ -80,14 +84,28 @@ class Entity:
         
         self.image = self.sprites[self.state][int(self.frame / self.animation_duration)]
     
+    def update_projectiles(self):
+        for projectile in self.projectiles:
+            projectile.move()
+    
+    def draw_projectiles(self, win):
+        for projectile in self.projectiles:
+            projectile.draw(win)
+    
     def draw(self, win):
         win.blit(self.image, (self.pos[0] + self.anim_offset[0], self.pos[1] + self.anim_offset[1]))
+        self.draw_projectiles(win)
+    
+    def shoot(self, entity):
+        projectile = Projectile(self.game, self.pos, self.direction, entity)
+        self.projectiles.append(projectile)
 
 class Player(Entity):
     def __init__(self, game, pos):
         super().__init__(game, 'player', pos)
 
         self.air_time = 0
+        self.jump_count = 0
     
     def handle_movement(self, event):
         if event.type == pygame.KEYDOWN:
@@ -95,21 +113,32 @@ class Player(Entity):
                 self.movement[0] += -1
             if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                 self.movement[0] += 1
-            if event.key == pygame.K_UP or event.key == pygame.K_w:
+            if (event.key == pygame.K_UP or event.key == pygame.K_w) and self.jump_count < 2:
                 self.velocity[1] = -8
+                self.jump_count += 1
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                 self.movement[0] -= -1
             if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                 self.movement[0] -= 1
     
+    def handle_controls(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if pygame.mouse.get_pressed()[0]:
+                pass
+            if pygame.mouse.get_pressed()[2]:
+                super().shoot(self)
+    
     def update_sprite(self):
+        super().update(self.game.tilemap)
         super().update_sprite()
+        super().update_projectiles()
 
         self.air_time += 1
     
         if self.collisions['down']:
             self.air_time = 0
+            self.jump_count = 0
         
         if self.air_time > 4:
             self.set_action('jump')
