@@ -23,19 +23,35 @@ class Game:
 
         self.tilemap = Tilemap(self)
 
+        self.scroll = [0, 0]
+
         self.clock = pygame.time.Clock()
     
     def run(self):
         while self.running:
             self.clock.tick(FPS)
 
+            #Define margins
+            margin_x = 100  # Horizontal margin
+
+            #Update scroll in x direction
+            if self.player.rect().centerx < self.scroll[0] + WIDTH / 2 - margin_x:
+                self.scroll[0] += (self.player.rect().centerx - (self.scroll[0] + WIDTH / 2 - margin_x)) / 10
+            elif self.player.rect().centerx > self.scroll[0] + WIDTH / 2 + margin_x:
+                self.scroll[0] += (self.player.rect().centerx - (self.scroll[0] + WIDTH / 2 + margin_x)) / 10
+            
+            #Update scroll in y direction
+            self.scroll[1] += (self.player.rect().centery - HEIGHT / 2 - self.scroll[1]) / 10
+
+            render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
+
             self.win.blit(self.assets['background'], (0, 0))
 
-            self.tilemap.draw(self.win)
+            self.tilemap.draw(self.win, offset=render_scroll)
 
             #self.player.update(self.tilemap)
             self.player.update_sprite()
-            self.player.draw(self.win)
+            self.player.draw(self.win, offset=render_scroll)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

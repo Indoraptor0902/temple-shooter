@@ -18,8 +18,8 @@ class Tilemap:
             'stone': load_images('tiles/stone')
         }
 
-        for i in range(10):
-            self.tilemap[str(3 + i) + ';8'] = {'type': 'grass', 'variant': 1, 'pos': [3 + i, 8]}
+        for i in range(50):
+            self.tilemap[str(-5 + i) + ';8'] = {'type': 'grass', 'variant': 1, 'pos': [-5 + i, 8]}
             self.tilemap['9;' + str(5 + i)] = {'type': 'stone', 'variant': 1, 'pos': [9, 5 + i]}
     
     def tiles_around(self, pos):
@@ -38,7 +38,7 @@ class Tilemap:
                 rects.append(pygame.Rect(tile['pos'][0] * TILE_SIZE, tile['pos'][1] * TILE_SIZE, TILE_SIZE, TILE_SIZE))
         return rects
     
-    def draw(self, win):
+    def draw(self, win, offset=(0, 0)):
         for loc in self.tilemap:
             tile = self.tilemap[loc]
-            win.blit(self.sprites[tile['type']][tile['variant']], (tile['pos'][0] * TILE_SIZE, tile['pos'][1] * TILE_SIZE))
+            win.blit(self.sprites[tile['type']][tile['variant']], (tile['pos'][0] * TILE_SIZE - offset[0], tile['pos'][1] * TILE_SIZE - offset[1]))

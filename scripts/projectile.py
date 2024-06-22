@@ -27,5 +27,5 @@ class Projectile:
     def move(self):
         self.pos[0] += self.speed
     
-    def draw(self, win):
-        win.blit(self.sprite, self.pos)
+    def draw(self, win, offset=(0, 0)):
+        win.blit(self.sprite, (self.pos[0] - offset[0], self.pos[1] - offset[1]))

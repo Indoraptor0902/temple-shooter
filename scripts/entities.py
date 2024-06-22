@@ -88,13 +88,13 @@ class Entity:
         for projectile in self.projectiles:
             projectile.move()
     
-    def draw_projectiles(self, win):
+    def draw_projectiles(self, win, offset=(0, 0)):
         for projectile in self.projectiles:
-            projectile.draw(win)
+            projectile.draw(win, offset)
     
-    def draw(self, win):
-        win.blit(self.image, (self.pos[0] + self.anim_offset[0], self.pos[1] + self.anim_offset[1]))
-        self.draw_projectiles(win)
+    def draw(self, win, offset=(0, 0)):
+        win.blit(self.image, (self.pos[0] + self.anim_offset[0] - offset[0], self.pos[1] + self.anim_offset[1] - offset[1]))
+        self.draw_projectiles(win, offset)
     
     def shoot(self, entity):
         projectile = Projectile(self.game, self.pos, self.direction, entity)
