@@ -39,6 +39,13 @@ class Tilemap:
         return rects
     
     def draw(self, win, offset=(0, 0)):
-        for loc in self.tilemap:
+        for x in range(offset[0] // TILE_SIZE, (offset[0] + WIDTH // TILE_SIZE + 1)):
+            for y in range(offset[1] // TILE_SIZE, (offset[1] + HEIGHT // TILE_SIZE + 1)):
+                loc = str(x) + ';' + str(y)
+                if loc in self.tilemap:
+                    tile = self.tilemap[loc]
+                    win.blit(self.sprites[tile['type']][tile['variant']], (tile['pos'][0] * TILE_SIZE - offset[0], tile['pos'][1] * TILE_SIZE - offset[1]))
+
+        '''for loc in self.tilemap:
             tile = self.tilemap[loc]
-            win.blit(self.sprites[tile['type']][tile['variant']], (tile['pos'][0] * TILE_SIZE - offset[0], tile['pos'][1] * TILE_SIZE - offset[1]))
+            win.blit(self.sprites[tile['type']][tile['variant']], (tile['pos'][0] * TILE_SIZE - offset[0], tile['pos'][1] * TILE_SIZE - offset[1]))'''
