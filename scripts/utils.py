@@ -6,6 +6,7 @@ from scripts.colors import *
 pygame.init()
 
 BASE_IMG_PATH = 'data/images/'
+BASE_MAP_PATH = 'data/maps/'
 
 def flip_img(sprite):
     return pygame.transform.flip(sprite, True, False)
@@ -40,24 +41,18 @@ def load_all_spritesheets(path):
     
     return all_sprites
 
-class Animation:
-    def __init__(self, images, img_dur=5, loop=True):
-        self.images = images
-        self.loop = loop
-        self.img_duration = img_dur
-        self.done = False
-        self.frame = 0
 
+class Animation:
+    def __init__(self, sprites, img_dur=5):
+        self.sprites = sprites
+        self.img_dur = img_dur
+        self.frame = 0
+    
     def copy(self):
-        return Animation(self.images, self.img_duration, self.loop)
+        return Animation(self.sprites, self.img_dur)
     
     def update(self):
-        if self.loop:
-            self.frame = (self.frame + 1) % (self.img_duration * len(self.images))
-        else:
-            self.frame = min(self.frame + 1, self.img_duration * len(self.images) - 1)
-            if self.frame >= self.img_duration * len(self.images) - 1:
-                self.done = True
+        self.frame = (self.frame + 1) % (self.img_dur * len(self.sprites))
     
     def img(self):
-        return self.images[int(self.frame / self.img_duration)]
+        return self.sprites[int(self.frame / self.img_dur)]

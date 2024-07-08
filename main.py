@@ -23,6 +23,8 @@ class Game:
 
         self.tilemap = Tilemap(self)
 
+        self.tilemap.load('map.json')
+
         self.scroll = [0, 0]
 
         self.clock = pygame.time.Clock()
@@ -57,7 +59,7 @@ class Game:
                 if event.type == pygame.QUIT:
                     self.running = False
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_q:
+                    if event.key == pygame.K_ESCAPE:
                         self.running = False
                 self.player.handle_movement(event)
                 self.player.handle_controls(event)

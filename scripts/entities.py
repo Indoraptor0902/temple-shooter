@@ -27,6 +27,7 @@ class Entity:
         self.animation_duration = 4
         self.frame = 0
         self.air_time = 0
+        self.animation = Animation(self.sprites[self.state], self.animation_duration)
 
         self.project_wpn_img = load_image('gun.png')
         self.projectiles = []
@@ -37,7 +38,16 @@ class Entity:
     def set_action(self, action):
         if action != self.action:
             self.action = action
+            self.state = self.action + '_' + self.direction
             self.frame = 0
+            self.animation = Animation(self.sprites[self.state], self.animation_duration)
+    
+    def set_direction(self, direction):
+        if direction != self.direction:
+            self.direction = direction
+            self.state = self.action + '_' + self.direction
+            self.frame = 0
+            self.animation = Animation(self.sprites[self.state], self.animation_duration)
     
     def update(self, tilemap):
         self.collisions = {'up': False, 'down': False, 'left': False, 'right': False}
@@ -73,16 +83,16 @@ class Entity:
             self.velocity[1] = 0
     
     def update_sprite(self):
-        self.frame = (self.frame + 1) % (self.animation_duration * len(self.sprites[self.state]))
+        self.animation.update()
         
         if self.movement[0] > 0:
-            self.direction = 'right'
+            self.set_direction('right')
         if self.movement[0] < 0:
-            self.direction = 'left'
+            self.set_direction('left')
 
         self.state = self.action + '_' + self.direction
         
-        self.image = self.sprites[self.state][int(self.frame / self.animation_duration)]
+        self.image = self.animation.img()
     
     def update_projectiles(self):
         for projectile in self.projectiles:
