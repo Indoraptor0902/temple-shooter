@@ -1,6 +1,7 @@
 import pygame
 from scripts.utils import *
 from scripts.projectile import *
+import random
 
 class Entity:
     def __init__(self, game, entity_type, pos):
@@ -156,3 +157,13 @@ class Player(Entity):
             self.set_action('run')
         else:
             self.set_action('idle')
+
+class Enemy(Entity):
+    def __init__(self, game):
+        self.game = game
+        super().__init__(game, "enemy", (200, 50))
+    
+    def update_sprite(self):
+        super().update(self.game.tilemap)
+        super().update_sprite()
+        super().update_projectiles()

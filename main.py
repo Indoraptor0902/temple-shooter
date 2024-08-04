@@ -1,7 +1,7 @@
 import pygame
 from scripts.settings import *
 from scripts.utils import *
-from scripts.entities import Player
+from scripts.entities import *
 from scripts.tilemap import Tilemap
 
 
@@ -22,6 +22,8 @@ class Game:
         self.player = Player(self, (50, 50))
 
         self.tilemap = Tilemap(self)
+
+        self.enemy = Enemy(self)
 
         self.tilemap.load('map.json')
 
@@ -54,6 +56,9 @@ class Game:
             #self.player.update(self.tilemap)
             self.player.update_sprite()
             self.player.draw(self.win, offset=render_scroll)
+
+            self.enemy.update_sprite()
+            self.enemy.draw(self.win, offset=render_scroll)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
